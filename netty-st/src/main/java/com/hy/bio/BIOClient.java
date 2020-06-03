@@ -1,4 +1,4 @@
-package xom.hy.bio;
+package com.hy.bio;
 
 public class BIOClient {
 }
