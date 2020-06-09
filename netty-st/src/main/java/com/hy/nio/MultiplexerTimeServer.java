@@ -46,7 +46,7 @@ public class MultiplexerTimeServer implements  Runnable{
     public void run() {
         while (!stop){
             try {
-                //遍历selector，休眠1秒，无论是否有读写时间发生，selector每隔1秒唤醒一次
+                //遍历selector，休眠1秒，无论是否有读写事件发生，selector每隔1秒唤醒一次
                 selector.select(1000);
                 Set<SelectionKey> selectionKeys = selector.selectedKeys();
                 Iterator<SelectionKey> it = selectionKeys.iterator();
