@@ -16,6 +16,8 @@ public class MultiplexerTimeServer implements  Runnable{
 
     private ServerSocketChannel serverSocketChannel;
 
+    private static int counter = 1;
+
     private volatile boolean stop;
 
     public MultiplexerTimeServer(int port){
@@ -47,7 +49,8 @@ public class MultiplexerTimeServer implements  Runnable{
         while (!stop){
             try {
                 //遍历selector，休眠1秒，无论是否有读写事件发生，selector每隔1秒唤醒一次
-                selector.select(1000);
+//                selector.select(1000);
+                selector.select();
                 Set<SelectionKey> selectionKeys = selector.selectedKeys();
                 Iterator<SelectionKey> it = selectionKeys.iterator();
                 SelectionKey key = null;
@@ -98,6 +101,16 @@ public class MultiplexerTimeServer implements  Runnable{
                     String body = new String(bytes, "UTF-8");
                     System.out.println("The time server receive order : " + body);
                     String currentTime = "QUERY TIME ORDER".equals(body) ? new Date(System.currentTimeMillis()).toString() : "BAD ORDER";
+                    counter++;
+                    System.out.println("count : " + counter);
+                    if (counter % 2 == 0){
+                        try {
+                            Thread.sleep(20000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    System.out.println("thread");
                     doWriter(sc,currentTime);
                 }else if (readBytes < 0){
                     key.cancel();
@@ -109,6 +122,7 @@ public class MultiplexerTimeServer implements  Runnable{
 
     private void doWriter(SocketChannel sc, String currentTime) throws IOException {
         if (currentTime != null && currentTime.trim().length() > 0){
+            currentTime = currentTime + "->" + counter;
             byte[] bytes = currentTime.getBytes();
             ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
             byteBuffer.put(bytes);

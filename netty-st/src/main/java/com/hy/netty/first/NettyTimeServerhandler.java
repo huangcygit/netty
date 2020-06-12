@@ -19,6 +19,7 @@ public class NettyTimeServerhandler extends ChannelHandlerAdapter {
         ctx.close();
     }
 
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf buf = (ByteBuf) msg;
